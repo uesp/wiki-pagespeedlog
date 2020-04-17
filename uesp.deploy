@@ -1,7 +1,7 @@
 
 name = uesp.pagespeedlog
 description = MediaWiki extension for log server response times.
-repository = 
+repository = https://github.com/uesp/wiki-pagespeedlog
 backup = false
 verbosity = 0
 staged = true
@@ -13,6 +13,8 @@ ignore = .git*
 dest = content1.uesp.net:/home/uesp/www/w/extensions/PageSpeedLog/
 dest = content2.uesp.net:/home/uesp/www/w/extensions/PageSpeedLog/
 dest = content3.uesp.net:/home/uesp/www/w/extensions/PageSpeedLog/
-dest = dev.uesp.net:/home/uesp/dev/www/w/extensions/PageSpeedLog/
+
+destname = [backup]backup1.uesp.net:/home/uesp/www/w/extensions/PageSpeedLog/
+destname = [dev]content3.uesp.net:/home/uesp/dev/www/w/extensions/PageSpeedLog/
 
 # manualcopy = all: {source}SendZabbixStats.php {destserver}:/etc/zabbix/commands/send_pagespeed_stats.php

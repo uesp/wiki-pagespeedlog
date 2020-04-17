@@ -4,7 +4,8 @@
 class ComputePageSpeedStats 
 {
 	
-	public $logFile = "/var/log/httpd/pagespeed.log";
+	public $LOGFILE = "/var/log/httpd/pagespeed.log";
+	
 	public $durationToParse = 60;		// Seconds
 	public $currentTime = 0;
 	public $lineBufferSize = 512;
@@ -12,6 +13,8 @@ class ComputePageSpeedStats
 	public $startScriptTime = 0;
 	public $endScriptTime = 0;
 	public $echo = false;
+	public $numLinesFound = 0;
+	public $scriptTimeTaken = 0;
 	
 	public $minSpeed = -1;
 	public $maxSpeed = -1;
@@ -21,24 +24,40 @@ class ComputePageSpeedStats
 	public $speedDataCount = -1;
 	
 	public $f = false;
+	
+	public $outputJson = false;
+	public $outputData = array();
+	public $json = "";
 
 	
 	function __construct()
 	{
 		$this->currentTime = time();
 		$this->startScriptTime = microtime(true);
+		
+		$this->parseInputParams();
 	}
 	
 	
-	function Output($msg)
-	{
-		if ($this->echo) print($msg . "\n");
+	function parseInputParams() {
+		$options = getopt("je");
+		
+		if ($options['j'] !== null) $this->outputJson = true;
+		if ($options['e'] !== null) $this->echo = true;
 	}
 	
 	
 	function ReportError($msg)
 	{
-		if ($this->echo) print($msg . "\n");
+		if ($this->outputJson) {
+			$this->outputData['isError'] = true;
+			if ($this->outputData['errorMsg'] == null) $this->outputData['errorMsg'] = array();
+			$this->outputData['errorMsg'][] = $msg;
+		}
+		else if ($this->echo) {
+			print($msg . "\n");
+		}
+		
 		return false;
 	}
 
@@ -84,9 +103,38 @@ class ComputePageSpeedStats
 			}
 		}
 		
-		$this->Output("\tFound $numLinesFound lines from last {$this->durationToParse} sec!");
+		$this->numLinesFound = $numLinesFound;
+		
 	}
 	
+	
+	function OutputText() {
+		if (!$this->echo) return;
+		
+		print("\tFound {$this->numLinesFound} lines from last {$this->durationToParse} sec!\n");
+		
+		print("\tRange = {$this->minSpeed} to {$this->maxSpeed} ms\n");
+		print("\tAverage = {$this->avgSpeed} ms\n");
+		print("\tStandard Deviation = {$this->stdSpeed} ms\n");
+		print("\t90% = {$this->stdSpeed90} ms\n");
+		
+		print("\tTime Taken = {$this->scriptTimeTaken} ms\n"); 
+	}
+	
+	
+	function OutputJson() {
+		$this->json = json_encode($this->outputData);
+		print($this->json);
+	}
+	
+	
+	function Output() {
+		
+		if ($this->outputJson)
+			$this->OutputJson();
+		else
+			$this->OutputText();
+	}
 	
 	function ComputeStats()
 	{
@@ -116,16 +164,11 @@ class ComputePageSpeedStats
 		foreach ($this->data as $data)
 		{
 			$speed = floatval($data[1]);
-			$sumSpeed2 = pow($speed - $avgSpeed, 2);
+			$sumSpeed2 += pow($speed - $avgSpeed, 2);
 		}
 		
-		$deviation = $sumSpeed2 / $count;
-		$deviation90 = $deviation * 1.645 + $average; 
-		
-		$this->Output("\tRange = $minSpeed to $maxSpeed ms");
-		$this->Output("\tAverage = $avgSpeed ms");
-		$this->Output("\tStandard Deviation = $deviation ms");
-		$this->Output("\t90% = $deviation90 ms");
+		$deviation = sqrt($sumSpeed2 / $count);
+		$deviation90 = $deviation * 1.645 + $avgSpeed;
 		
 		$this->speedDataCount = $count;
 		$this->minSpeed = $minSpeed;
@@ -134,14 +177,22 @@ class ComputePageSpeedStats
 		$this->stdSpeed = $deviation;
 		$this->stdSpeed90 = $deviation90;
 		
+		$this->outputData['parseDuration'] = $this->durationToParse;
+		$this->outputData['dataCount'] = $count;
+		$this->outputData['minSpeed'] = $minSpeed;
+		$this->outputData['maxSpeed'] = $maxSpeed;
+		$this->outputData['avgSpeed'] = $avgSpeed;
+		$this->outputData['stdSpeed'] = $deviation;
+		$this->outputData['stdSpeed90'] = $deviation90;
+		
 		return true;
 	}
 	
 	
 	function Parse()
 	{
-		$this->f = @fopen($this->logFile, "rb");
-		if ($this->f === false) return $this->ReportError("Failed to open log file '{$this->logFile}'!");
+		$this->f = @fopen($this->LOGFILE, "rb");
+		if ($this->f === false) return $this->ReportError("Failed to open log file '{$this->LOGFILE}'!");
 		
 		$this->ParseLinesFromEndOfFile();
 		$this->ComputeStats();
@@ -149,8 +200,9 @@ class ComputePageSpeedStats
 		fclose($this->f);
 		
 		$this->endScriptTime = microtime(true);
-		$diffTime = ($this->endScriptTime - $this->startScriptTime) * 1000;
-		$this->Output("\tTime Taken = $diffTime ms"); 
+		$this->scriptTimeTaken = ($this->endScriptTime - $this->startScriptTime) * 1000;
+		
+		$this->Output();
 		
 		return true;
 	}

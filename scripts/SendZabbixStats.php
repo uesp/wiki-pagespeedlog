@@ -1,6 +1,8 @@
 <?php
 
-require_once("/home/uesp/www/w/extensions/PageSpeedLog/ComputePageSpeedStats.class.php");
+if (php_sapi_name() != "cli") die("Can only be run from command line!");
+
+require_once(__DIR__ . "/ComputePageSpeedStats.class.php");
 
 $PAGESPEED_KEY = "wikipagespeed";
 $ZABBIX_SERVER = "10.7.143.20";
