@@ -145,7 +145,7 @@ class ComputePageSpeedStats
 		
 		foreach ($this->data as $data)
 		{
-			if ($data[2] == "") continue;
+			if (trim($data[2]) == "") continue;
 			++$count;
 			
 			$speed = floatval($data[1]);
