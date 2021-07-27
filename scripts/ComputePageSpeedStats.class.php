@@ -28,7 +28,7 @@ class ComputePageSpeedStats
 	public $outputJson = false;
 	public $outputData = array();
 	public $json = "";
-
+	
 	
 	function __construct()
 	{
@@ -60,18 +60,18 @@ class ComputePageSpeedStats
 		
 		return false;
 	}
-
+	
 	
 	function ParseLinesFromEndOfFile()
 	{
 		fseek($this->f, -1, SEEK_END);
-
+		
 		$firstTime = $this->currentTime - $this->durationToParse;
 		$chunk = "";
 		$leftOverChunk = "";
 		$isFinished = false;
 		$numLinesFound = 0;
-
+		
 		while (ftell($this->f) > 0 && !$isFinished) 
 		{
 			$seekOffset = min(ftell($this->f), $this->lineBufferSize);
@@ -80,7 +80,7 @@ class ComputePageSpeedStats
 			$chunk = fread($this->f, $seekOffset) . $leftOverChunk;
 			
 			fseek($this->f, -$seekOffset, SEEK_CUR);
-
+			
 			$lines = explode("\n", $chunk);
 			
 			$leftOverChunk = $lines[0];
@@ -96,7 +96,7 @@ class ComputePageSpeedStats
 				{
 					$isFinished = true;
 					break;
-				}				
+				}
 				
 				$this->data[] = $cols;
 				++$numLinesFound;
@@ -142,7 +142,7 @@ class ComputePageSpeedStats
 		$maxSpeed = 0;
 		$sumSpeed = 0;
 		$count = 0;
-				
+		
 		foreach ($this->data as $data)
 		{
 			if ($data[2] == "") continue;
