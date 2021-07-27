@@ -15,10 +15,10 @@ $wgPageSpeedLogFile = "/var/log/httpd/pagespeed.log";
 register_shutdown_function(array("PageSpeedLog", 'onShutdown'), $wgPageSpeedLogFile, $pslStartTime);
 
 
-class PageSpeedLog 
+class PageSpeedLog
 {
 	
-	static function setHooks( $parser ) 
+	static function setHooks( $parser )
 	{
 		/* Empty...used to force loading of this file */
 	}
@@ -32,7 +32,7 @@ class PageSpeedLog
 		$url =  "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
 		
 		$outputLine = "$startTime, $diffTime, $url\n";
-		file_put_contents($filename, $outputLine, FILE_APPEND);		
+		file_put_contents($filename, $outputLine, FILE_APPEND);
 	}
 	
 };
