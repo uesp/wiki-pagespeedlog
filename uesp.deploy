@@ -13,8 +13,13 @@ ignore = .git*
 dest = content1.uesp.net:/home/uesp/www/w/extensions/PageSpeedLog/
 dest = content2.uesp.net:/home/uesp/www/w/extensions/PageSpeedLog/
 dest = content3.uesp.net:/home/uesp/www/w/extensions/PageSpeedLog/
+dest = content1.uesp.net:/home/sfwiki/www/w/extensions/PageSpeedLog/
+dest = content2.uesp.net:/home/sfwiki/www/w/extensions/PageSpeedLog/
+dest = content3.uesp.net:/home/sfwiki/www/w/extensions/PageSpeedLog/
 
 destname = [backup]backup1.uesp.net:/home/uesp/www/w/extensions/PageSpeedLog/
 destname = [dev]content3.uesp.net:/home/uesp/dev/www/w/extensions/PageSpeedLog/
+destname = [backup]backup1.uesp.net:/home/sfwiki/www/w/extensions/PageSpeedLog/
+destname = [dev]content3.uesp.net:/home/sfwiki/dev/www/w/extensions/PageSpeedLog/
 
 # manualcopy = all: {source}SendZabbixStats.php {destserver}:/etc/zabbix/commands/send_pagespeed_stats.php
