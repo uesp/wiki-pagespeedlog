@@ -21,6 +21,7 @@ class ComputePageSpeedStats
 	public $avgSpeed = -1;
 	public $stdSpeed = -1;
 	public $stdSpeed90 = -1;
+	public $medSpeed = -1;
 	public $speedDataCount = -1;
 	
 	public $f = false;
@@ -115,6 +116,7 @@ class ComputePageSpeedStats
 		
 		print("\tRange = {$this->minSpeed} to {$this->maxSpeed} ms\n");
 		print("\tAverage = {$this->avgSpeed} ms\n");
+		print("\tMedian = {$this->medSpeed} ms\n");
 		print("\tStandard Deviation = {$this->stdSpeed} ms\n");
 		print("\t90% = {$this->stdSpeed90} ms\n");
 		
@@ -135,6 +137,35 @@ class ComputePageSpeedStats
 		else
 			$this->OutputText();
 	}
+	
+	
+	function ComputeMedian($data)
+	{
+		$values = [];
+		
+		foreach ($data as $element)
+		{
+			$values[] = floatval($element[1]);
+		}
+		
+		sort($values);
+		$count = count($values);
+		$middleIndex = floor(($count-1)/2);
+		
+		if ($count % 2)
+		{
+			$median = $values[$middleIndex];
+		} 
+		else
+		{
+			$low = $values[$middleIndex];
+			$high = $values[$middleIndex + 1];
+			$median = (($low+$high)/2);
+		}
+		
+		return $median;
+	}
+	
 	
 	function ComputeStats()
 	{
@@ -171,6 +202,7 @@ class ComputePageSpeedStats
 		$deviation90 = $deviation * 1.645 + $avgSpeed;
 		
 		$this->speedDataCount = $count;
+		$this->medSpeed = $this->ComputeMedian($this->data);
 		$this->minSpeed = $minSpeed;
 		$this->maxSpeed = $maxSpeed;
 		$this->avgSpeed = $avgSpeed;
@@ -181,6 +213,7 @@ class ComputePageSpeedStats
 		$this->outputData['dataCount'] = $count;
 		$this->outputData['minSpeed'] = $minSpeed;
 		$this->outputData['maxSpeed'] = $maxSpeed;
+		$this->outputData['medSpeed'] = $medSpeed;
 		$this->outputData['avgSpeed'] = $avgSpeed;
 		$this->outputData['stdSpeed'] = $deviation;
 		$this->outputData['stdSpeed90'] = $deviation90;
