@@ -41,10 +41,28 @@ class ComputePageSpeedStats
 	
 	
 	function parseInputParams() {
-		$options = getopt("je");
+		$options = getopt("f:jet:");
 		
 		if ($options['j'] !== null) $this->outputJson = true;
 		if ($options['e'] !== null) $this->echo = true;
+		
+		if ($options['f'] !== null) 
+		{
+			$logFile = $options['f'];
+			
+			if (file_exists($logFile)) 
+			{
+				$this->LOGFILE = $logFile;
+				if ($this->echo) print("Using '$logFile' as source log file!\n");
+			}
+		}
+		
+		if ($options['t'] !== null) 
+		{
+			$duration = intval($options['t']);
+			if ($duration > 0) $this->durationToParse = $duration;
+			print("Using duration of $duration sec for parsing log file...\n");
+		}
 	}
 	
 	
