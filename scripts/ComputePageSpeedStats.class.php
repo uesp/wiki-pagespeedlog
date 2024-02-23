@@ -15,6 +15,9 @@ class ComputePageSpeedStats
 	public $echo = false;
 	public $numLinesFound = 0;
 	public $scriptTimeTaken = 0;
+	public $ignoreTimesMoreThan = -1;	//ms
+	public $linesIgnored = 0;
+	
 	
 	public $minSpeed = -1;
 	public $maxSpeed = -1;
@@ -111,6 +114,13 @@ class ComputePageSpeedStats
 				
 				if ($startTime <= 0) continue;
 				
+				$speed = floatval($cols[1]);
+				if ($this->ignoreTimesMoreThan > 0 && $speed > $this->ignoreTimesMoreThan)
+				{
+					$this->linesIgnored++;
+					continue;
+				}
+				
 				if ($startTime < $firstTime)
 				{
 					$isFinished = true;
@@ -130,7 +140,10 @@ class ComputePageSpeedStats
 	function OutputText() {
 		if (!$this->echo) return;
 		
-		print("\tFound {$this->numLinesFound} lines from last {$this->durationToParse} sec!\n");
+		if ($this->linesIgnored > 0)
+			print("\tFound {$this->numLinesFound} lines (ignored $this->linesIgnored lines slower than {$this->ignoreTimesMoreThan} ms) from last {$this->durationToParse} sec )!\n");
+		else
+			print("\tFound {$this->numLinesFound} lines from last {$this->durationToParse} sec )!\n");
 		
 		print("\tRange = {$this->minSpeed} to {$this->maxSpeed} ms\n");
 		print("\tAverage = {$this->avgSpeed} ms\n");
@@ -227,6 +240,7 @@ class ComputePageSpeedStats
 		$this->stdSpeed = $deviation;
 		$this->stdSpeed90 = $deviation90;
 		
+		$this->outputData['lineIgnored'] = $this->linesIgnored;
 		$this->outputData['parseDuration'] = $this->durationToParse;
 		$this->outputData['dataCount'] = $count;
 		$this->outputData['minSpeed'] = $minSpeed;
@@ -237,6 +251,38 @@ class ComputePageSpeedStats
 		$this->outputData['stdSpeed90'] = $deviation90;
 		
 		return true;
+	}
+	
+	
+	function computeBins($numBins)
+	{
+		if ($numBins <= 1) return [];
+		
+		$minSpeed = $this->minSpeed;
+		$minSpeed = 0;
+		$range = $this->maxSpeed - $minSpeed;
+		if ($range <= 0) return [];
+		
+		$delta = $range / $numBins;
+		$binData = array_fill(0, $numBins, 0.0);
+		$xData = array_fill(0, $numBins, 0.0);
+		$countData = array_fill(0, $numBins, 0);
+		$dataCount = count($this->data);
+		
+		for ($x = $minSpeed + $delta, $i = 0; $i < $numBins; $x += $delta, $i++)
+		{
+			$xData[$i] = number_format($x);
+		}
+		
+		foreach ($this->data as $data)
+		{
+			$binIndex = (floatval($data[1]) - $minSpeed) /$delta;
+			if ($binIndex >= $numBins) $binIndex = $numBins - 1;
+			$binData[$binIndex] += 100.0 / $dataCount;
+			$countData[$binIndex] += 1;
+		}
+		
+		return [$binData, $xData, $countData];
 	}
 	
 	
