@@ -22,12 +22,16 @@ class SpecialPageSpeed extends SpecialPage
 	
 	function __construct()
 	{
+		global $wgPageSpeedLogFile;
+		
 		parent::__construct( 'PageSpeed' );
+		
 		$this->computeStats = new ComputePageSpeedStats();
+		$this->computeStats->LOGFILE = $wgPageSpeedLogFile;
 	}
 	
 	
-	function parseInputParams($par) 
+	function parseInputParams($par)
 	{
 		$request = $this->getRequest();
 		$duration = $request->getText('time');
@@ -111,7 +115,7 @@ class SpecialPageSpeed extends SpecialPage
 		$output->addHTML("<li>Median Speed: $medSpeed ms</li>");
 		$output->addHTML("<li>Standard Deviation: $stdSpeed ms</li>");
 		$output->addHTML("<li>90%: $stdSpeed90 ms</li>");
-		$output->addHTML("<li>Log Parse Time: $scriptTimeTaken ms</li>");
+		$output->addHTML("<li>Log Parse Time: $scriptTimeTaken ms (using log file <em>{$this->computeStats->LOGFILE}</em>)</li>");
 		$output->addHTML("</ul>");
 		
 		$this->outputGraph();
