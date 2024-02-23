@@ -159,8 +159,10 @@ class SpecialPageSpeed extends SpecialPage
 	{
 		list($binData, $xData, $countData) = $this->computeStats->computeBins($this->NUM_GRAPH_BINS);
 		$output = $this->getOutput();
+		$parseDuration = intval($this->computeStats->durationToParse);
 		
 		$output->addHTML("<p><h2>Graph</h2>");
+		$output->addHTML("Showing the distribution of page render times in the last $parseDuration secs.");
 		$output->addHTML("<div id='pageSpeedGraphRoot'>");
 		$output->addHTML("<div class='pageSpeedGraph'>");
 		
