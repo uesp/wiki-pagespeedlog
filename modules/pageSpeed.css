@@ -31,6 +31,7 @@
 	left: -14px;
 	text-align: right;
 	width: 50px;
+	color: black;
 }
 
 .psGraphBar::before {
@@ -39,6 +40,7 @@
 	transform: rotate(-90deg) translatex(40px);
 	top: 10px;
 	width: 22px;
+	color: black;
 }
 
 .psGraphBarHidden {
