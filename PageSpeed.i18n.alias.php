@@ -3,5 +3,5 @@
 $specialPageAliases = [];
 
 $specialPageAliases['en'] = [
-	'PageSpeed' => [ 'PageSpeed', 'Page Speed' ],
+	'PageSpeed' => [ 'PageSpeedLog', 'Page Speed' ],
 ];
