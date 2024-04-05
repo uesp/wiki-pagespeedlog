@@ -143,7 +143,7 @@ class ComputePageSpeedStats
 		if ($this->linesIgnored > 0)
 			print("\tFound {$this->numLinesFound} lines (ignored $this->linesIgnored lines slower than {$this->ignoreTimesMoreThan} ms) from last {$this->durationToParse} sec )!\n");
 		else
-			print("\tFound {$this->numLinesFound} lines from last {$this->durationToParse} sec )!\n");
+			print("\tFound {$this->numLinesFound} lines from last {$this->durationToParse} sec!\n");
 		
 		print("\tRange = {$this->minSpeed} to {$this->maxSpeed} ms\n");
 		print("\tAverage = {$this->avgSpeed} ms\n");
