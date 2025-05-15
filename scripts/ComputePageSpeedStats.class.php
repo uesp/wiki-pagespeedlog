@@ -343,7 +343,7 @@ class ComputePageSpeedStats
 		$this->summaryData['dataCount'] = $count;
 		$this->summaryData['minSpeed'] = $minSpeed;
 		$this->summaryData['maxSpeed'] = $maxSpeed;
-		$this->summaryData['medSpeed'] = $medSpeed;
+		$this->summaryData['medSpeed'] = $this->medSpeed;
 		$this->summaryData['avgSpeed'] = $avgSpeed;
 		$this->summaryData['stdSpeed'] = $deviation;
 		$this->summaryData['stdSpeed90'] = $deviation90;
@@ -399,7 +399,7 @@ class ComputePageSpeedStats
 		$this->outputData['dataCount'] = $count;
 		$this->outputData['minSpeed'] = $minSpeed;
 		$this->outputData['maxSpeed'] = $maxSpeed;
-		$this->outputData['medSpeed'] = $medSpeed;
+		$this->outputData['medSpeed'] = $this->medSpeed;
 		$this->outputData['avgSpeed'] = $avgSpeed;
 		$this->outputData['stdSpeed'] = $deviation;
 		$this->outputData['stdSpeed90'] = $deviation90;
