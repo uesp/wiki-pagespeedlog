@@ -64,16 +64,16 @@ class ComputePageSpeedStats
 	function parseInputParams() {
 		$options = getopt("f:jet:sm:i:l:h");
 		
-		if ($options['h'] !== null)
+		if (isset($options['h']))
 		{
 			$this->ShowHelp();
 			exit(1);
 		}
 		
-		if ($options['j'] !== null) $this->outputJson = true;
-		if ($options['e'] !== null) $this->echo = true;
+		if (isset($options['j'])) $this->outputJson = true;
+		if (isset($options['e'])) $this->echo = true;
 		
-		if ($options['f'] !== null) 
+		if (isset($options['f'])) 
 		{
 			$logFile = $options['f'];
 			
@@ -84,16 +84,16 @@ class ComputePageSpeedStats
 			}
 		}
 		
-		if ($options['s'] !== null) $this->showSummary = true;
+		if (isset($options['s'])) $this->showSummary = true;
 		
-		if ($options['m'] !== null)
+		if (isset($options['m']))
 		{
 			$duration = intval($options['m']);
 			if ($duration > 0) $this->summaryTime = $duration;
 			print("Using value of $duration sec for summary duration...\n");
 		}
 		
-		if ($options['t'] !== null) 
+		if (isset($options['t'])) 
 		{
 			$duration = intval($options['t']);
 			if ($duration > 0) $this->durationToParse = $duration;
@@ -106,14 +106,14 @@ class ComputePageSpeedStats
 			print("Using duration of $duration sec for summary parsing log file...\n");
 		}
 		
-		if ($options['i'] !== null)
+		if (isset($options['i']))
 		{
 			$duration = intval($options['i']);
 			if ($duration > 0) $this->ignoreTimesMoreThan = $duration;
 			print("Ignoring load times more than $duration ms ...\n");
 		}
 		
-		if ($options['l'] !== null)
+		if (isset($options['l']))
 		{
 			$duration = intval($options['l']);
 			if ($duration > 0) $this->showTimesMoreThan = $duration;
@@ -126,7 +126,7 @@ class ComputePageSpeedStats
 	{
 		if ($this->outputJson) {
 			$this->outputData['isError'] = true;
-			if ($this->outputData['errorMsg'] == null) $this->outputData['errorMsg'] = array();
+			if (!isset($this->outputData['errorMsg'])) $this->outputData['errorMsg'] = array();
 			$this->outputData['errorMsg'][] = $msg;
 		}
 		else if ($this->echo) {
